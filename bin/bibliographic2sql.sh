@@ -3,7 +3,7 @@
 # bibliographic2sql.sh - given a file, output an SQL statement
 
 # configure
-TEMPLATE="UPDATE bibliographics SET author='##AUTHOR##', title='##TITLE##', date='##DATE##', source='##SOURCE##', publisher='##PUBLISHER##', language='##LANGUAGE##', doi='##DOI##', url='##URL##' WHERE identifier IS '##IDENTIFIER##';"
+TEMPLATE="UPDATE bibliographics SET author='##AUTHOR##', title='##TITLE##', date='##DATE##', source='##SOURCE##', publisher='##PUBLISHER##', language='##LANGUAGE##', doi='##DOI##', url='##URL##', abstract='##ABSTRACT##' WHERE identifier IS '##IDENTIFIER##';"
 
 # make sane
 if [[ -z $1 ]]; then
@@ -18,7 +18,7 @@ FILE=$1
 IFS=$'\t'
 
 # read the file
-cat $FILE | while read IDENTIFIER AUTHOR TITLE DATE SOURCE PUBLISHER LANGUAGE DOI URL; do
+cat $FILE | while read IDENTIFIER AUTHOR TITLE DATE SOURCE PUBLISHER LANGUAGE DOI URL ABSTRACT; do
 
 	# escape
 	IDENTIFIER=$( echo $IDENTIFIER | sed 's=/=\\/=g' )
@@ -47,6 +47,9 @@ cat $FILE | while read IDENTIFIER AUTHOR TITLE DATE SOURCE PUBLISHER LANGUAGE DO
 	URL=$( echo $URL | sed "s/'/''/g" )
 	URL=$( echo $URL | sed 's=/=\\/=g' )
 
+	ABSTRACT=$( echo $ABSTRACT | sed "s/'/''/g" )
+	ABSTRACT=$( echo $ABSTRACT | sed 's=/=\\/=g' )
+
 	# do the substitutions
 	SQL=$( echo $TEMPLATE | sed "s/##IDENTIFIER##/$IDENTIFIER/" )
 	SQL=$( echo $SQL      | sed "s/##AUTHOR##/$AUTHOR/" )
@@ -57,6 +60,7 @@ cat $FILE | while read IDENTIFIER AUTHOR TITLE DATE SOURCE PUBLISHER LANGUAGE DO
 	SQL=$( echo $SQL      | sed "s/##LANGUAGE##/$LANGUAGE/" )
 	SQL=$( echo $SQL      | sed "s/##DOI##/$DOI/" )
 	SQL=$( echo $SQL      | sed "s/##URL##/$URL/" )
+	SQL=$( echo $SQL      | sed "s/##ABSTRACT##/$ABSTRACT/" )
 
 	# output
 	echo $SQL

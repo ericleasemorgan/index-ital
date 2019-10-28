@@ -15,6 +15,6 @@ BASEURL=$1
 IDENTIFIER=$2
 
 # compute output, do the work (conditional), and done
-OUTPUT="$TMP/$( echo $IDENTIFIER | cut -d '/' -f2 ).txt"
+OUTPUT="$TMP/$( echo $IDENTIFIER | cut -d '/' -f2 ).tsv"
 if [[ ! -e $OUTPUT ]]; then $HARVESTBIBLIOGRAPHICS "$BASEURL" "$IDENTIFIER" > $OUTPUT; fi
 exit

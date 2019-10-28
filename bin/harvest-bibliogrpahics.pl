@@ -45,8 +45,13 @@ my $publisher  = $metadata->publisher();
 my $language   = $metadata->language();
 my $doi        = ( $metadata->identifier() )[ 1 ];
 my $url        = $metadata->relation();
+my $abstract   = $metadata->description();
 
 # tidy
+$abstract =~ s/&nbsp;/ /g;
+$abstract =~ s/\r/ /g;
+$abstract =~ s/\n/ /g;
+$abstract =~ s/ +/ /g;
 $title =~ s/ +/ /g;
 $url   =~ s/view/download/g;
 
@@ -60,10 +65,11 @@ warn "   publisher: $publisher\n";
 warn "    language: $language\n";
 warn "         doi: $doi\n";
 warn "         URL: $url\n";
-warn " \n";
+warn "    abstract: $abstract\n";
+warn "\n";
 
 # output and done
-print "$identifier\t$author\t$title\t$date\t$source\t$publisher\t$language\t$doi\t$url\n";
+print "$identifier\t$author\t$title\t$date\t$source\t$publisher\t$language\t$doi\t$url\t$abstract\n";
 exit;
 
 

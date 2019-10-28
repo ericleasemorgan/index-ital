@@ -5,7 +5,7 @@ TIKA='/Applications/tika-server.jar'
 DATABASE='./etc/ital.db'
 
 # initialize
-#./bin/clean.sh 
+./bin/clean.sh 
 ./bin/db-create.sh
 mkdir -p ./tmp/bibliographics
 mkdir -p ./tmp/pdf
@@ -22,15 +22,22 @@ cat ./tmp/identifiers.sql | sqlite3 $DATABASE
 
 # get the bibliographics
 cat ./tmp/identifiers.txt | parallel ./bin/harvest-bibliogrpahics.sh "https://ejournals.bc.edu/index.php/ital/oai" {}
-cat ./tmp/bibliographics/*.txt > ./tmp/bibliographics.tsv
+cat ./tmp/bibliographics/*.tsv > ./tmp/bibliographics.tsv
 
 # clean, normalize, enhance bibliographics here
 
 # insert bibliographics into the database
 echo 'BEGIN TRANSACTION;' > ./tmp/bibliogrpahics.sql
-find ./tmp/bibliographics -name *.txt | parallel ./bin/bibliographic2sql.sh >> ./tmp/bibliogrpahics.sql
+find ./tmp/bibliographics -name *.tsv | parallel ./bin/bibliographic2sql.sh >> ./tmp/bibliogrpahics.sql
 echo 'END TRANSACTION;' >> ./tmp/bibliogrpahics.sql
 cat ./tmp/bibliogrpahics.sql | sqlite3 $DATABASE
+
+# parse authors and insert them into the database
+echo 'DELETE FROM authors;' > ./tmp/authors.sql
+echo 'BEGIN TRANSACTION;' >> ./tmp/authors.sql
+printf ".mode tabs\nselect bid, author from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/author2authors.sh $1 $2 >> ./tmp/authors.sql
+echo 'END TRANSACTION;' >> ./tmp/authors.sql
+cat ./tmp/authors.sql | sqlite3 $DATABASE
 
 # harvest pdf
 printf ".mode tabs\nselect identifier, url from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/harvest-pdf.sh $1 $2
@@ -65,14 +72,5 @@ echo 'BEGIN TRANSACTION;' >> ./tmp/entities.sql
 printf ".mode tabs\nselect bid, identifier from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/txt2entities.sh $1 $2 >> ./tmp/entities.sql
 echo 'END TRANSACTION;' >> ./tmp/entities.sql
 cat ./tmp/entities.sql | sqlite3 $DATABASE
-
-# parse authors and insert them into the database
-echo 'DELETE FROM authors;' > ./tmp/authors.sql
-echo 'BEGIN TRANSACTION;' >> ./tmp/authors.sql
-printf ".mode tabs\nselect bid, author from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/author2authors.sh $1 $2 >> ./tmp/authors.sql
-echo 'END TRANSACTION;' >> ./tmp/authors.sql
-cat ./tmp/authors.sql | sqlite3 $DATABASE
-
-
 
 
