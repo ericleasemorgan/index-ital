@@ -2,6 +2,7 @@
 
 # configure
 TIKA='/Applications/tika-server.jar'
+DATABASE='./etc/ital.db'
 
 # initialize
 ./bin/clean.sh 
@@ -17,7 +18,7 @@ mkdir -p ./tmp/txt
 echo 'BEGIN TRANSACTION;' > ./tmp/identifiers.sql
 cat ./tmp/identifiers.txt | parallel ./bin/identifier2sql.sh >> ./tmp/identifiers.sql
 echo 'END TRANSACTION;' >> ./tmp/identifiers.sql
-cat ./tmp/identifiers.sql | sqlite3 ./etc/ital.db
+cat ./tmp/identifiers.sql | sqlite3 $DATABASE
 
 # get the bibliographics
 cat ./tmp/identifiers.txt | parallel ./bin/harvest-bibliogrpahics.sh "https://ejournals.bc.edu/index.php/ital/oai" {}
@@ -29,10 +30,10 @@ cat ./tmp/bibliographics/*.txt > ./tmp/bibliographics.tsv
 echo 'BEGIN TRANSACTION;' > ./tmp/bibliogrpahics.sql
 find ./tmp/bibliographics -name *.txt | parallel ./bin/bibliographic2sql.sh >> ./tmp/bibliogrpahics.sql
 echo 'END TRANSACTION;' >> ./tmp/bibliogrpahics.sql
-cat ./tmp/bibliogrpahics.sql | sqlite3 ./etc/ital.db
+cat ./tmp/bibliogrpahics.sql | sqlite3 $DATABASE
 
 # harvest pdf
-printf ".mode tabs\nselect identifier, url from bibliographics;" | sqlite3 ./etc/ital.db | parallel --colsep '\t' ./bin/harvest-pdf.sh $1 $2
+printf ".mode tabs\nselect identifier, url from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/harvest-pdf.sh $1 $2
 
 # start tika server
 java -jar $TIKA &
@@ -47,15 +48,15 @@ kill $PID
 
 # calculate statistics and insert them into the database
 echo 'BEGIN TRANSACTION;' > ./tmp/statistics.sql
-echo "select identifier from bibliographics;" | sqlite3 ./etc/ital.db | parallel ./bin/txt2statistics.sh >> ./tmp/statistics.sql
+echo "select identifier from bibliographics;" | sqlite3 $DATABASE | parallel ./bin/txt2statistics.sh >> ./tmp/statistics.sql
 echo 'END TRANSACTION;' >> ./tmp/statistics.sql
-cat ./tmp/statistics.sql | sqlite3 ./etc/ital.db
+cat ./tmp/statistics.sql | sqlite3 $DATABASE
 
 # calculate keywords and insert them into the database
 echo 'BEGIN TRANSACTION;' > ./tmp/keywords.sql
-printf ".mode tabs\nselect bid, identifier from bibliographics;" | sqlite3 ./etc/ital.db | parallel --colsep '\t' ./bin/txt2keywords.sh $1 $2 >> ./tmp/keywords.sql
+printf ".mode tabs\nselect bid, identifier from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/txt2keywords.sh $1 $2 >> ./tmp/keywords.sql
 echo 'END TRANSACTION;' >> ./tmp/keywords.sql
-cat ./tmp/keywords.sql | sqlite3 ./etc/ital.db
+cat ./tmp/keywords.sql | sqlite3 $DATABASE
 
 
 
