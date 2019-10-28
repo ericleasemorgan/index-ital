@@ -15,22 +15,24 @@ CREATE TABLE bibliographics (
 	publisher  TEXT,
 	language   TEXT,
 	doi        TEXT,
-	words      INT,
-	sentences  INT,
-	flesch     INT,
+	words      INTEGER,
+	sentences  INTEGER,
+	flesch     INTEGER,
 	url        TEXT
 );
 	
 -- computed significant words
 CREATE TABLE keywords (
-	bid     INT,
+	bid     INTEGER,
 	keyword TEXT
 );
 
 -- extracted names, places, date, etc.
 CREATE TABLE entities (
-	bid    INT,
-	entity TEXT
+	eid    INTEGER PRIMARY KEY,
+	bid    INTEGER,
+	entity TEXT, 
+	type   TEXT
 );
 
 -- make lookups faster
