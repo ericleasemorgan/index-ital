@@ -35,5 +35,11 @@ CREATE TABLE entities (
 	type   TEXT
 );
 
+-- authors
+CREATE TABLE authors (
+	bid    INTEGER,
+	author TEXT
+);
+
 -- make lookups faster
 CREATE INDEX identifiers ON bibliographics ( identifier );

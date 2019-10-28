@@ -5,7 +5,7 @@ TIKA='/Applications/tika-server.jar'
 DATABASE='./etc/ital.db'
 
 # initialize
-./bin/clean.sh 
+#./bin/clean.sh 
 ./bin/db-create.sh
 mkdir -p ./tmp/bibliographics
 mkdir -p ./tmp/pdf
@@ -55,8 +55,6 @@ cat ./tmp/statistics.sql | sqlite3 $DATABASE
 # calculate keywords and insert them into the database
 echo 'DELETE FROM keywords;' > ./tmp/keywords.sql
 echo 'BEGIN TRANSACTION;' >> ./tmp/keywords.sql
-printf ".mode tabs\nselect bid, identifier from bibliographics;" | sqlite3 ./etc/ital.db | parallel --colsep '\t' ./bin/txt2keywords.sh $1 $2 >> ./tmp/keywords.sql
-echo 'BEGIN TRANSACTION;' > ./tmp/keywords.sql
 printf ".mode tabs\nselect bid, identifier from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/txt2keywords.sh $1 $2 >> ./tmp/keywords.sql
 echo 'END TRANSACTION;' >> ./tmp/keywords.sql
 cat ./tmp/keywords.sql | sqlite3 $DATABASE
@@ -64,9 +62,16 @@ cat ./tmp/keywords.sql | sqlite3 $DATABASE
 # calculate named entities and insert them into the database
 echo 'DELETE FROM entities;' > ./tmp/entities.sql
 echo 'BEGIN TRANSACTION;' >> ./tmp/entities.sql
-printf ".mode tabs\nselect bid, identifier from bibliographics;" | sqlite3 ./etc/ital.db | parallel --colsep '\t' ./bin/txt2entities.sh $1 $2 >> ./tmp/entities.sql
+printf ".mode tabs\nselect bid, identifier from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/txt2entities.sh $1 $2 >> ./tmp/entities.sql
 echo 'END TRANSACTION;' >> ./tmp/entities.sql
-cat ./tmp/entities.sql | sqlite3 ./etc/ital.db
+cat ./tmp/entities.sql | sqlite3 $DATABASE
+
+# parse authors and insert them into the database
+echo 'DELETE FROM authors;' > ./tmp/authors.sql
+echo 'BEGIN TRANSACTION;' >> ./tmp/authors.sql
+printf ".mode tabs\nselect bid, author from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/author2authors.sh $1 $2 >> ./tmp/authors.sql
+echo 'END TRANSACTION;' >> ./tmp/authors.sql
+cat ./tmp/authors.sql | sqlite3 $DATABASE
 
 
 
