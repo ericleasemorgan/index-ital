@@ -53,14 +53,11 @@ echo 'END TRANSACTION;' >> ./tmp/statistics.sql
 cat ./tmp/statistics.sql | sqlite3 $DATABASE
 
 # calculate keywords and insert them into the database
-<<<<<<< HEAD
 echo 'DELETE FROM keywords;' > ./tmp/keywords.sql
 echo 'BEGIN TRANSACTION;' >> ./tmp/keywords.sql
 printf ".mode tabs\nselect bid, identifier from bibliographics;" | sqlite3 ./etc/ital.db | parallel --colsep '\t' ./bin/txt2keywords.sh $1 $2 >> ./tmp/keywords.sql
-=======
 echo 'BEGIN TRANSACTION;' > ./tmp/keywords.sql
 printf ".mode tabs\nselect bid, identifier from bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/txt2keywords.sh $1 $2 >> ./tmp/keywords.sql
->>>>>>> 95d8d8ac2ef183b74262f60c1a786cbae9ec56a0
 echo 'END TRANSACTION;' >> ./tmp/keywords.sql
 cat ./tmp/keywords.sql | sqlite3 $DATABASE
 
