@@ -13,7 +13,7 @@ mkdir -p ./tmp/txt
 
 # get identifiers and insert them in to the database
 ./bin/harvest-identifiers.pl > ./tmp/identifiers.txt
-echo 'BEGIN TRANSACTION;' > ./tmp/identifiers.sql
+echo 'BEGIN TRANSACTION;'    > ./tmp/identifiers.sql
 cat ./tmp/identifiers.txt | parallel ./bin/identifier2sql.sh >> ./tmp/identifiers.sql
 echo 'END TRANSACTION;' >> ./tmp/identifiers.sql
 cat ./tmp/identifiers.sql | sqlite3 $DATABASE
@@ -22,7 +22,8 @@ cat ./tmp/identifiers.sql | sqlite3 $DATABASE
 cat ./tmp/identifiers.txt | parallel ./bin/harvest-bibliogrpahics.sh "https://ejournals.bc.edu/index.php/ital/oai" {}
 
 # clean, normalize, enhance bibliographics here
-cat ./tmp/bibliographics/*.tsv > ./tmp/bibliographics.tsv
+printf "identifier\tauthor\ttitle\tdate\tsource\tpublisher\tlanguage\tdoi\turl\tabstract\n" > ./tmp/bibliographics.tsv
+cat ./tmp/bibliographics/*.tsv >> ./tmp/bibliographics.tsv
 
 # insert bibliographics into the database
 echo 'BEGIN TRANSACTION;' > ./tmp/bibliogrpahics.sql
