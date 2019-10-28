@@ -15,6 +15,9 @@ CREATE TABLE bibliographics (
 	publisher  TEXT,
 	language   TEXT,
 	doi        TEXT,
+	words      INT,
+	sentences  INT,
+	flesch     INT,
 	url        TEXT
 );
 	
