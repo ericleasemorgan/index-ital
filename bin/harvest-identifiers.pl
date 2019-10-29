@@ -16,7 +16,7 @@ binmode( STDOUT, ':utf8' );
 binmode( STDERR, ':utf8' );
 
 # get all identifiers and then process each one
-my $identifiers = $harvester->listIdentifiers( 'metadataPrefix' => 'oai_dc' );
+my $identifiers = $harvester->listAllIdentifiers( 'metadataPrefix' => 'oai_dc' );
 while ( my $identifier = $identifiers->next() ) {
 
     # parse, debug, and output
