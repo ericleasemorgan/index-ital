@@ -38,6 +38,9 @@ printf ".mode tabs\nSELECT bid, author FROM bibliographics;" | sqlite3 $DATABASE
 echo 'END TRANSACTION;' >> ./tmp/authors.sql
 cat ./tmp/authors.sql | sqlite3 $DATABASE
 
+# stop here, just for fun
+exit
+
 # harvest pdf
 printf ".mode tabs\nSELECT identifier, url FROM bibliographics;" | sqlite3 $DATABASE | parallel --colsep '\t' ./bin/harvest-pdf.sh $1 $2
 
