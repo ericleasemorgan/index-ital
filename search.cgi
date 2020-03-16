@@ -11,7 +11,7 @@
 # configure
 use constant FACETFIELD => ( 'facet_keywords', 'facet_authors', 'facet_entities' );
 use constant SOLR       => 'http://localhost:8983/solr/ital';
-use constant ROWS       => 10;
+use constant ROWS       => 1000;
 use constant TXT        => './tmp/txt';
 use constant PDF        => './tmp/pdf';
 use constant ROOT       => 'http://dh.crc.nd.edu/sandbox/ital';
