@@ -9,7 +9,7 @@
 
 
 # configure
-use constant FACETFIELD => ( facet_keywords, facet_authors, facet_entities );
+use constant FACETFIELD => ( 'facet_keywords', 'facet_authors', 'facet_entities' );
 use constant SOLR       => 'http://localhost:8983/solr/ital';
 use constant TXT        => './tmp/txt';
 use constant PDF        => './tmp/pdf';
