@@ -322,7 +322,7 @@ sub results_template {
 <div class="col-3 col-m-3 menu">
   <ul>
 		<li><a href="/sandbox/ital/search.cgi">Home</a></li>
-		<li><a href="/sandbox/ital/gids2urls.cgi">Get URLs</a></li>
+		<li><a href="/sandbox/ital/bids2urls.cgi">Get URLs</a></li>
  </ul>
 </div>
 
