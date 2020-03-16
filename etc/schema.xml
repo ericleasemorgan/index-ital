@@ -27,17 +27,26 @@
   <field name="_version_" type="long"         indexed="true"      stored="false"/>
   
   <!-- my fields -->
-  <field name="bid"         type="string"        multiValued="false"  indexed="true"   stored="true"   />
-  <field name="identifier"  type="string"        multiValued="false"  indexed="false"  stored="true"   />
-  <field name="title"       type="text_general"  multiValued="false"  indexed="true"   stored="true"   />
-  <field name="fulltext"    type="text_general"  multiValued="false"  indexed="true"   stored="false"  />
-  <field name="abstract"    type="text_general"  multiValued="false"  indexed="true"   stored="true"  />
-  <field name="doi"         type="string"        multiValued="false"  indexed="true"   stored="true"  />
-  <field name="words"       type="int"           multiValued="false"  indexed="false"  stored="true"  />
-  <field name="sentences"   type="int"           multiValued="false"  indexed="false"  stored="true"  />
-  <field name="flesch"      type="int"           multiValued="false"  indexed="false"  stored="true"  />
-  <field name="keywords"    type="text_general"  multiValued="true"   indexed="true"   stored="true"  />
-  <field name="authors"     type="text_general"  multiValued="true"   indexed="true"   stored="true"  />
+  <field name="bid"            type="string"        multiValued="false"  indexed="true"   stored="true"   />
+  <field name="identifier"     type="string"        multiValued="false"  indexed="false"  stored="true"   />
+  <field name="title"          type="text_general"  multiValued="false"  indexed="true"   stored="true"   />
+  <field name="facet_keywords" type="string"        multiValued="true"   indexed="true"   stored="true"   />
+  <field name="facet_authors"  type="string"        multiValued="true"   indexed="true"   stored="true"   />
+  <field name="facet_entities" type="string"        multiValued="true"   indexed="true"   stored="true"   />
+  <field name="url"            type="string"        multiValued="false"  indexed="false"  stored="true"   />
+  <field name="date"           type="text_general"  multiValued="false"  indexed="true"   stored="true"   />
+  <field name="source"         type="text_general"  multiValued="false"  indexed="true"   stored="true"   />
+  <field name="publisher"      type="text_general"  multiValued="false"  indexed="true"   stored="true"   />
+  <field name="language"       type="text_general"  multiValued="false"  indexed="true"   stored="true"   />
+  <field name="fulltext"       type="text_general"  multiValued="false"  indexed="true"   stored="false"  />
+  <field name="abstract"       type="text_general"  multiValued="false"  indexed="true"   stored="true"  />
+  <field name="doi"            type="string"        multiValued="false"  indexed="true"   stored="true"  />
+  <field name="words"          type="int"           multiValued="false"  indexed="false"  stored="true"  />
+  <field name="sentences"      type="int"           multiValued="false"  indexed="false"  stored="true"  />
+  <field name="flesch"         type="int"           multiValued="false"  indexed="false"  stored="true"  />
+  <field name="keywords"       type="text_general"  multiValued="true"   indexed="true"   stored="true"  />
+  <field name="authors"        type="text_general"  multiValued="true"   indexed="true"   stored="true"  />
+  <field name="entities"       type="text_general"  multiValued="true"   indexed="true"   stored="true"  />
 
   <!-- cool field -->
   <copyField source="*" dest="_text_"/>
