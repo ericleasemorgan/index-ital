@@ -46,13 +46,13 @@ else {
 
 	# re-initialize
 	my $items = '';
-	my @gids  = ();
+	my @bids  = ();
 	
 	# build the search options
-	my %search_options                   = ();
-	$search_options{ 'facet.field' }     = [ FACETFIELD ];
-	$search_options{ 'facet' }           = 'true';
-	$search_options{ 'rows' }            = ROWS;
+	my %search_options               = ();
+	$search_options{ 'facet.field' } = [ FACETFIELD ];
+	$search_options{ 'facet' }       = 'true';
+	$search_options{ 'rows' }        = ROWS;
 
 	# search
 	my $response = $solr->search( $query, \%search_options );
@@ -118,6 +118,9 @@ else {
 		my $url        = $doc->value_for(  'url' );
 		my $identifier = $doc->value_for(  'identifier' );
 
+		# update the list of dids
+		push( @bids, $bid );
+
 		# create file names
 		my $file = substr( $identifier, rindex( $identifier, '/' ) + 1, length( $identifier ) );
 		$txt    = "$root/$txt/$file.txt";
@@ -159,13 +162,15 @@ else {
 		$item =~ s/##IDENTIFIER##/$identifier/g;
 		$item =~ s/##KEYWORDS##/join( '; ', @keywords )/eg;
 		$item =~ s/##AUTHORS##/join( '; ', @authors )/eg;
-
+		
 		# update the list of items
 		$items .= $item;
 					
 	}	
 
-	# build the html
+	my $bid2urls = &ids2urls;
+	$bid2urls    =~ s/##IDS##/join( ',', @bids )/e;
+
 	$html =  &results_template;
 	$html =~ s/##RESULTS##/&results/e;
 	$html =~ s/##QUERY##/$sanitized/e;
@@ -175,8 +180,11 @@ else {
 	$html =~ s/##FACETSKEYWORDS##/join( '; ', @facet_keywords )/e;
 	$html =~ s/##FACETSAUTHORS##/join( '; ', @facet_authors )/e;
 	$html =~ s/##FACETSENTITIES##/join( '; ', @facet_entities )/e;
+	$html =~ s/##ID2URLS##/$bid2urls/ge;
 
 }
+
+
 
 # done
 print $cgi->header( -type => 'text/html', -charset => 'utf-8');
@@ -348,3 +356,13 @@ sub results_template {
 EOF
 
 }
+
+
+sub ids2urls {
+
+	return <<EOF
+<a href="/sandbox/ital/bids2urls.cgi?bids=##IDS##">only local URLs</a>
+EOF
+
+}
+
